@@ -258,14 +258,14 @@ EOF
 }
 
 napcat_or() { 
-[[ ! -z "$2" ]] && screen_qq="$3" || screen_qq="napcat"
+[[ ! -z "$2" ]] && screen_qq="$2" || screen_qq="napcat"
+[[ ! -z "$2" ]] && napcat_qq="-q $2" || napcat_qq=
+[[ ! -z "$3" ]] && screen_qq="$3" || screen_qq="napcat"
  case "$1" in
     start)
-        [[ ! -z "$2" ]] && napcat_qq="-q $2" || napcat_qq=
         xvfb-run -a qq --no-sandbox $napcat_qq
         ;;
     screen)
-        [[ ! -z "$3" ]] && screen_qq="$3" || screen_qq="napcat"
         screen -dmS $screen_qq bash -c "xvfb-run -a qq --no-sandbox $napcat_qq"
         ;;
     status)
