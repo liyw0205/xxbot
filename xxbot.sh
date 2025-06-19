@@ -260,12 +260,12 @@ EOF
 napcat_or() { 
 [[ ! -z "$2" ]] && screen_qq="$2" || screen_qq="napcat"
 [[ ! -z "$2" ]] && napcat_qq="-q $2" || napcat_qq=
-[[ ! -z "$3" ]] && screen_qq="$3" || screen_qq="napcat"
  case "$1" in
     start)
         xvfb-run -a qq --no-sandbox $napcat_qq
         ;;
     screen)
+        [[ ! -z "$3" ]] && screen_qq="$3" || screen_qq="napcat"
         screen -dmS $screen_qq bash -c "xvfb-run -a qq --no-sandbox $napcat_qq"
         ;;
     status)
@@ -301,9 +301,10 @@ if [[ "$0" != "$MODDIR/xxbot.sh" ]]; then
 fi
 chmod -R 755 $MODDIR
 clear
+
 xxbot_pid=
-if ps -ef | grep "java -Dfile.encoding=UTF-8 -jar $MODDIR/bot.jar --spring.config.location=file:$MODDIR/config/" | grep -v grep >/dev/null; then
-xxbot_pid=$(ps -ef | grep "java -Dfile.encoding=UTF-8 -jar $MODDIR/bot.jar --spring.config.location=file:$MODDIR/config/" | grep -v grep | awk '{print $2}')
+if ps -ef | grep "$MODDIR/bot.jar" | grep -v grep >/dev/null; then
+xxbot_pid=$(ps -ef | grep "$MODDIR/bot.jar" | grep -v grep | awk '{print $2}')
 fi
 case "$1" in
     start)
