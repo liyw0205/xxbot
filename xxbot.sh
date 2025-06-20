@@ -22,16 +22,17 @@ help() {
     ui_print "install java      [安装java]"
     ui_print "install java git  [github加速]"
     echo
-    ui_print "napcat screen 默认容器名napcat"
+    ui_print "napcat screen 默认会话名napcat"
+    ui_print "screen -ls 查看全部会话"
     ui_print "ctrl+a+d不关闭screen后台退出"
     echo
     ui_print "napcat启动或者后台可以接QQ号来快速启动"
     ui_print "napcat screen 123456789"
     echo
-    ui_print "有多个QQ号启动可以设置容器"
+    ui_print "有多个QQ号启动可以设置会话"
     ui_print "napcat screen 1112223334 qq2"
     echo
-    ui_print "查看/停止napcat后台可以加容器名"
+    ui_print "查看/停止napcat后台可以加会话名"
     ui_print "napcat status qq2"
 }
 
