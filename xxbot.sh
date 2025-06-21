@@ -309,6 +309,7 @@ crontab -l > temp_cron || {
         sed -i "s/@reboot xxbot restart//" temp_cron
         sed -i "s/0 9 * * * xxbot restart//" temp_cron
         }
+    }
 crontab temp_cron
 rm temp_cron
 }
