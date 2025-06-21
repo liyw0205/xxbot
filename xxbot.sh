@@ -11,6 +11,8 @@ help() {
     ui_print "restart           [重启xxbot]"
     ui_print "status            [查看xxbot后台状态]"
     ui_print "stop              [停止xxbot后台]"
+    ui_print "cron              [定时重启xxbot]"
+    ui_print "cron stop         [删除定时任务]"
     ui_print "napcat start      [启动napcat]"
     ui_print "napcat screen     [后台启动napcat]"
     ui_print "napcat status     [查看napcat后台状态]"
@@ -90,6 +92,15 @@ case "$1" in
         ui_print "$1不是可安装选项"
         ;;
 esac
+}
+
+install_pack() {
+[[ -z "$(which yum 2>/dev/null)" ]] || yum install "$1" -y
+[[ -z "$(which apt 2>/dev/null)" ]] || apt-get -y install "$1" -y
+[[ -z "$(which "$1")" ]] && {
+    ui_prin "不支持的系统"
+    exit 127
+    }
 }
 
 read_or() {
@@ -278,6 +289,30 @@ napcat_or() {
  esac
 }
 
+cron_or() { 
+if [[ -z "$(which cron)" ]]; then
+    install_pack cron
+fi
+crontab -l > temp_cron || {
+    ui_print "cron 安装失败，请自行安装"
+    exit 127
+    }
+[[ ! -z "$2" ]] && {
+    [[ ! -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
+        echo "#xxbot cron" >> temp_cron
+        echo "@reboot xxbot restart" >> temp_cron
+        echo "0 9 * * * xxbot restart" >> temp_cron
+        }
+    } || {
+    [[ -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
+        sed -i "s/#xxbot cron//" temp_cron
+        sed -i "s/@reboot xxbot restart//" temp_cron
+        sed -i "s/0 9 * * * xxbot restart//" temp_cron
+        }
+crontab temp_cron
+rm temp_cron
+}
+
 export MODDIR="/root/xxbot"
 export JAVA_HOME="$MODDIR/java"
 abi=$(uname -m)
@@ -331,6 +366,9 @@ case "$1" in
         ;;
     stop)
         [[ ! -z "$xxbot_pid" ]] && kill -9 $xxbot_pid
+        ;;
+    cron)
+        cron_or "$2"
         ;;
     napcat)
         napcat_or "$2" "$3" "$4"

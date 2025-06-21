@@ -29,6 +29,8 @@ xxbot options
     restart           [重启xxbot]
     status            [查看xxbot后台状态]
     stop              [停止xxbot后台]
+    cron              [定时重启xxbot]
+    cron stop         [删除定时任务]
     napcat start      [启动napcat]
     napcat screen     [后台启动napcat]
     napcat status     [查看napcat后台状态]
