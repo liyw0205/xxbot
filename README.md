@@ -10,7 +10,7 @@
 apt update && apt upgrade -y && \
 apt install screen curl -y
 ```
-下载脚本
+下载脚本 国内
 ```
 curl -L -o xxbot.sh https://gitee.com/keep-an-appointment/xxbot/raw/master/xxbot.sh && chmod +x xxbot.sh && bash xxbot.sh
 ```
@@ -54,6 +54,7 @@ xxbot napcat start
 - napcat screen 默认会话名napcat
 - screen -ls 查看全部会话
 - ctrl+a+d不关闭screen后台退出
+- 定时任务（xxbot）：7:30重启 开机重启
 - napcat启动或者后台可以接QQ号来快速启动
 - napcat screen 123456789
 - 有多个QQ号启动可以设置会话

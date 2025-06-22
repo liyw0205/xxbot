@@ -28,6 +28,8 @@ help() {
     ui_print "screen -ls 查看全部会话"
     ui_print "ctrl+a+d不关闭screen后台退出"
     echo
+    ui_print "定时任务（xxbot）：7:30重启 开机重启"
+    echo
     ui_print "napcat启动或者后台可以接QQ号来快速启动"
     ui_print "napcat screen 123456789"
     echo
@@ -301,13 +303,13 @@ crontab -l > temp_cron || {
     [[ ! -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
         echo "#xxbot cron" >> temp_cron
         echo "@reboot xxbot restart" >> temp_cron
-        echo "0 9 * * * xxbot restart" >> temp_cron
+        echo "30 7 * * * xxbot restart" >> temp_cron
         }
     } || {
     [[ -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
         sed -i "s/#xxbot cron//" temp_cron
         sed -i "s/@reboot xxbot restart//" temp_cron
-        sed -i "s/0 9 * * * xxbot restart//" temp_cron
+        sed -i "s/30 7 * * * xxbot restart//" temp_cron
         }
     }
 crontab temp_cron
