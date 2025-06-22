@@ -293,12 +293,12 @@ napcat_or() {
 
 cron_or() { 
 if [[ -z "$(which cron)" ]]; then
-    install_pack cron
-fi
-crontab -l > temp_cron || {
+    install_pack cron || {
     ui_print "cron 安装失败，请自行安装"
     exit 127
     }
+fi
+crontab -l > temp_cron || touch temp_cron
 [[ ! -z "$2" ]] && {
     [[ ! -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
         echo "#xxbot cron" >> temp_cron
