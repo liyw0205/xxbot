@@ -300,7 +300,7 @@ if [[ -z "$(which cron)" ]]; then
 fi
 temp_cron=$MODDIR/temp_cron
 crontab -l > $temp_cron || touch $temp_cron
-[[ "$2" = stop ]] && {
+[[ "$1" = stop ]] && {
     [[ -z "$(cat $temp_cron | grep '#xxbot cron')" ]] && {
         sed -i "s/#xxbot cron//" $temp_cron
         sed -i "s/@reboot xxbot restart//" $temp_cron
