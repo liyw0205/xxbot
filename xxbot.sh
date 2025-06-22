@@ -298,22 +298,23 @@ if [[ -z "$(which cron)" ]]; then
     exit 127
     }
 fi
-crontab -l > temp_cron || touch temp_cron
-[[ ! -z "$2" ]] && {
-    [[ ! -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
-        echo "#xxbot cron" >> temp_cron
-        echo "@reboot xxbot restart" >> temp_cron
-        echo "35 23 * * * xxbot restart" >> temp_cron
+temp_cron=$MODDIR/temp_cron
+crontab -l > $temp_cron || touch $temp_cron
+[[ "$2" = stop ]] && {
+    [[ -z "$(cat $temp_cron | grep '#xxbot cron')" ]] && {
+        sed -i "s/#xxbot cron//" $temp_cron
+        sed -i "s/@reboot xxbot restart//" $temp_cron
+        sed -i "s/35 23 * * * xxbot restart//" $temp_cron
         }
     } || {
-    [[ -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
-        sed -i "s/#xxbot cron//" temp_cron
-        sed -i "s/@reboot xxbot restart//" temp_cron
-        sed -i "s/35 23 * * * xxbot restart//" temp_cron
+    [[ -z "$(cat $temp_cron | grep '#xxbot cron')" ]] && {
+        echo "#xxbot cron" >> $temp_cron
+        echo "@reboot xxbot restart" >> $temp_cron
+        echo "35 23 * * * xxbot restart" >> $temp_cron
         }
     }
-crontab temp_cron
-rm temp_cron
+crontab $temp_cron
+rm $temp_cron
 }
 
 export MODDIR="/root/xxbot"
