@@ -303,13 +303,13 @@ crontab -l > temp_cron || {
     [[ ! -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
         echo "#xxbot cron" >> temp_cron
         echo "@reboot xxbot restart" >> temp_cron
-        echo "30 7 * * * xxbot restart" >> temp_cron
+        echo "35 23 * * * xxbot restart" >> temp_cron
         }
     } || {
     [[ -z "$(cat temp_cron | grep '#xxbot cron')" ]] && {
         sed -i "s/#xxbot cron//" temp_cron
         sed -i "s/@reboot xxbot restart//" temp_cron
-        sed -i "s/30 7 * * * xxbot restart//" temp_cron
+        sed -i "s/35 23 * * * xxbot restart//" temp_cron
         }
     }
 crontab temp_cron

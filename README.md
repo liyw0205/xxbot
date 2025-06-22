@@ -54,7 +54,7 @@ xxbot napcat start
 - napcat screen 默认会话名napcat
 - screen -ls 查看全部会话
 - ctrl+a+d不关闭screen后台退出
-- 定时任务（xxbot）：7:30重启 开机重启
+- 定时任务（xxbot）：23:35重启 开机重启
 - napcat启动或者后台可以接QQ号来快速启动
 - napcat screen 123456789
 - 有多个QQ号启动可以设置会话
