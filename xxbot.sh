@@ -301,10 +301,9 @@ fi
 temp_cron=$MODDIR/temp_cron
 crontab -l > $temp_cron || touch $temp_cron
 [[ "$1" = stop ]] && {
-    [[ -z "$(cat $temp_cron | grep '#xxbot cron')" ]] && {
-        sed -i "s/#xxbot cron//" $temp_cron
-        sed -i "s/@reboot xxbot restart//" $temp_cron
-        sed -i "s/35 23 * * * xxbot restart//" $temp_cron
+    [[ ! -z "$(cat $temp_cron | grep '#xxbot cron')" ]] && {
+        sed -e '/^#xxbot cron/d' -e '/@reboot xxbot restart/d' -e '/35 23 \* \* \* xxbot restart/d' $temp_cron > $temp_cron.tmp
+        mv $temp_cron.tmp $temp_cron
         }
     } || {
     [[ -z "$(cat $temp_cron | grep '#xxbot cron')" ]] && {
@@ -313,7 +312,7 @@ crontab -l > $temp_cron || touch $temp_cron
         echo "35 23 * * * xxbot restart" >> $temp_cron
         }
     }
-crontab $temp_cron
+crontab $temp_cron && ui_print "定时任务设置成功" || ui_print "定时任务设置失败"
 rm $temp_cron
 }
 
