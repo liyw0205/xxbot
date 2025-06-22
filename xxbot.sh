@@ -28,7 +28,7 @@ help() {
     ui_print "screen -ls 查看全部会话"
     ui_print "ctrl+a+d不关闭screen后台退出"
     echo
-    ui_print "定时任务（xxbot）：7:30重启 开机重启"
+    ui_print "定时任务（xxbot）：23:35重启 开机重启"
     echo
     ui_print "napcat启动或者后台可以接QQ号来快速启动"
     ui_print "napcat screen 123456789"
