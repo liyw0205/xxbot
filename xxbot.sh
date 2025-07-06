@@ -175,9 +175,15 @@ generate_config() {
         read_or enableAutoField 2 "自动灵田结算（默认 true）" || enableAutoField=true
         read_or enableAutoSecret 2 "自动秘境结算 （默认 true）" || enableAutoSecret=true
         read_or enableAutoRepair 2 "无偿双修" || enableAutoRepair=false
+        read_or shuangXuNumber 2 "设置无偿双修次数" || shuangXuNumber=6
+        read_or challengeMode 2 "自动挑战九层妖塔（默认不执行）
+0：不执行
+1：一口气1-9
+2：打完3层 7层 8层会自动回血" || challengeMode=0
         read_or botNumber 2 "设置编号" || botNumber=1
         read_or aiCheng 2 "设置爱称 可设置多个 名称&名称" || aiCheng="部将&傀儡&化身&星怒"
         read_or IntercalTime 2 "设置一键上架/炼金延迟时间 秒" || IntercalTime=3
+        read_or copy_config 2 "镜像配置，多账号配置（默认只生成单账号配置）" || copy_config=1
         read_config=
         ui_print "确认重置配置(默认 true/y): "
         read -r read_config
@@ -205,6 +211,18 @@ output_config() {
     fi
     mkdir -p "$MODDIR/config"
     
+    case "$copy_config" in
+        [1-9])
+        output2_config
+        ;;
+        *)
+        copy_config=1
+        output2_config
+        ;;
+    esac
+}
+
+output2_config() {
 cat <<EOF> "$MODDIR/config/application-local.yml"
 danfang:
   local-path: "/root/xxbot/pf.txt" 
@@ -212,12 +230,19 @@ danfang:
 #外部导入性平表
 xingping:
   local-path: "/root/xxbot/xp.txt"
-  
+
+EOF
+
+    i=1
+    while [ $i -le $copy_config ]; do
+        port=$((8081 + i))
+        
+cat <<EOF>> "$MODDIR/config/application-local.yml"
 bot:
   #  类型：ws 正向连接，ws-reverse 反向连接，
   #  以下是两个连接的使用模板，注意url里的端口每个bot需要不一样。
   - type: ws-reverse
-    url: ws://localhost:8082
+    url: ws://localhost:$port
     accessToken: 1024*1024*1024
     #    修炼群号
     groupId: $groupId
@@ -253,6 +278,10 @@ bot:
     enableAutoSecret: $enableAutoSecret
     #无偿双修
     enableAutoRepair: $enableAutoRepair
+    #设置无偿双修次数
+    shuangXuNumber: $shuangXuNumber
+    #自动挑战九层妖塔（默认不执行）0：不执行 1：一口气1-9 2：打完3层 7层 8层会自动回血
+    challengeMode: $challengeMode
     #设置编号
     botNumber: $botNumber
     #设置爱称 可设置多个 名称&名称
@@ -261,6 +290,9 @@ bot:
     IntercalTime: $IntercalTime
 
 EOF
+
+        i=$((i + 1))
+    done
 
 cat <<EOF> "$MODDIR/config/application.yml"
 spring:
