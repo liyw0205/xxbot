@@ -231,12 +231,15 @@ output_config() {
 
 output2_config() {
 cat <<EOF> "$MODDIR/config/application-local.yml"
+#外部导入丹方表
 danfang:
   local-path: "/root/xxbot/pf.txt" 
 
 #外部导入性平表
 xingping:
   local-path: "/root/xxbot/xp.txt"
+
+bot:
 
 EOF
 
@@ -245,9 +248,6 @@ EOF
         port=$((8081 + i))
         
 cat <<EOF>> "$MODDIR/config/application-local.yml"
-bot:
-  #  类型：ws 正向连接，ws-reverse 反向连接，
-  #  以下是两个连接的使用模板，注意url里的端口每个bot需要不一样。
   - type: ws-reverse
     url: ws://localhost:$port
     accessToken: 1024*1024*1024
