@@ -138,7 +138,14 @@ cd ~
 case "$1" in
     bot)
         [[ "$2" == "git" ]] && file_link="https://github.com/liyw0205/xxbot/releases/download/xxbot" || file_link="https://gitee.com/keep-an-appointment/xxbot/releases/download/bot"
+        bot_md5=$(curl -L https://gitee.com/keep-an-appointment/xxbot/releases/download/bot/md5 2>/dev/null)
         curl -L -O $file_link/bot.jar
+        jar_md5=$(md5sum ~/bot.jar | awk '{print $1}')
+        if [[ "$jar_md5" != "$bot_md5" ]]; then
+            ui_print "md5校验失败！请重试！"
+            exit 1
+        fi
+        [[ ! -z "$xxbot_pid" ]] && kill -9 $xxbot_pid
         curl -L -O $file_link/version
         curl -L -O $file_link/pf.txt
         curl -L -O $file_link/xp.txt
