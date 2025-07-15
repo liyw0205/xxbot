@@ -2,6 +2,8 @@ ui_print() {
     echo -e " $@"
 }
 
+
+
 help() {
     clear
     ui_print "1. start             [启动xxbot]"
@@ -47,7 +49,14 @@ help() {
     echo
     install_status "bot"
     install_status "java"
-    [[ ! -z "$xxbot_pid" ]] && ui_print"xxbot已启动：$(ps -p "$xxbot_pid" -o etime=)"
+    [[ -n "$xxbot_pid" ]] && {
+    etime=$(ps -p "$xxbot_pid" -o etime= | awk -F: '{
+        if (NF == 2) { printf "%d小时%d分钟", $1, $2 }
+        else if (NF == 3) { printf "%d小时%d分钟", $1, $2 }
+        else if (NF == 4) { split($1, a, "-"); printf "%d天%d小时%d分钟", a[1], a[2], $2 }
+    }')
+    ui_print "xxbot已启动：${etime}"
+    }
     system_info
 }
 
