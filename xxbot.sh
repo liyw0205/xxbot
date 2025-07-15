@@ -6,6 +6,9 @@ ui_print() {
 
 help() {
     clear
+    ui_print "------------------------------"
+    ui_print "xxbot options"
+    echo
     ui_print "1. start             [启动xxbot]"
     ui_print "2. bstart            [后台启动xxbot]"
     ui_print "3. restart           [重启xxbot]"
@@ -23,6 +26,7 @@ help() {
     ui_print "9. install napcat    [安装napcat]"
     ui_print "9. install java      [安装java]"
     ui_print "9. install java git  [github加速]"
+    ui_print "------------------------------"
     echo
     ui_print "napcat screen 默认会话名napcat"
     ui_print "screen -ls 查看全部会话"
