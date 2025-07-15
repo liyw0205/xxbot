@@ -1,28 +1,26 @@
 ui_print() {
     echo -e " $@"
 }
+
 help() {
     clear
-    install_status "bot"
-    install_status "java"
-    echo
-    ui_print "start             [启动xxbot]"
-    ui_print "bstart            [后台启动xxbot]"
-    ui_print "restart           [重启xxbot]"
-    ui_print "status            [查看xxbot后台状态]"
-    ui_print "stop              [停止xxbot后台]"
-    ui_print "cron              [定时重启xxbot]"
-    ui_print "cron stop         [删除定时任务]"
-    ui_print "napcat start      [启动napcat]"
-    ui_print "napcat screen     [后台启动napcat]"
-    ui_print "napcat status     [查看napcat后台状态]"
-    ui_print "napcat stop       [停止napcat后台]"
-    ui_print "update bot        [下载/更新bot]"
-    ui_print "update bot git    [github镜像]"
-    ui_print "update config     [重置配置]"
-    ui_print "install napcat    [安装napcat]"
-    ui_print "install java      [安装java]"
-    ui_print "install java git  [github加速]"
+    ui_print "1. start             [启动xxbot]"
+    ui_print "2. bstart            [后台启动xxbot]"
+    ui_print "3. restart           [重启xxbot]"
+    ui_print "4. status            [查看xxbot后台状态]"
+    ui_print "5. stop              [停止xxbot后台]"
+    ui_print "6. cron              [定时重启xxbot]"
+    ui_print "6. cron stop         [删除定时任务]"
+    ui_print "7. napcat start      [启动napcat]"
+    ui_print "7. napcat screen     [后台启动napcat]"
+    ui_print "7. napcat status     [查看napcat后台状态]"
+    ui_print "7. napcat stop       [停止napcat后台]"
+    ui_print "8. update bot        [下载/更新bot]"
+    ui_print "8. update bot git    [github镜像]"
+    ui_print "8. update config     [重置配置]"
+    ui_print "9. install napcat    [安装napcat]"
+    ui_print "9. install java      [安装java]"
+    ui_print "9. install java git  [github加速]"
     echo
     ui_print "napcat screen 默认会话名napcat"
     ui_print "screen -ls 查看全部会话"
@@ -38,6 +36,30 @@ help() {
     echo
     ui_print "查看/停止napcat后台可以加会话名"
     ui_print "napcat status qq2"
+    echo
+    ui_print "快捷命令帮助，数字按命令顺序类推"
+    ui_print "start可以代表1 bstart可以代表2"
+    ui_print "xxbot 1等于xxbot start"
+    ui_print "xxbot 2等于xxbot bstart"
+    ui_print "xxbot 8 1等于xxbot update bot"
+    ui_print "xxbot 8 1 1等于xxbot update bot git"
+    ui_print "xxbot 8 2等于xxbot update config"
+    echo
+    install_status "bot"
+    install_status "java"
+    [[ ! -z "$xxbot_pid" ]] && ui_print"xxbot已启动：$(ps -p "$xxbot_pid" -o etime=)"
+    system_info
+}
+
+system_info(){
+uptime=$(uptime -p | sed 's/up //; s/days/天/g; s/day/天/; s/hours/小时/g; s/hour/小时/; s/minutes/分钟/g; s/minute/分钟/; s/, / /g')
+cpu_usage=$(top -bn1 | grep '%Cpu' | awk '{printf "%.0f", $2 + $4}')
+mem_info=$(free -m | awk '/Mem:/ {printf "%d/%dMB (%.0f%%)", $3, $2, $3/$2*100}')
+storage_info=$(df -h / | awk 'NR==2 {printf "%s/%s (%s)", $3, $2, $5}')
+ui_print "系统时长：$uptime"
+ui_print "CPU：${cpu_usage}%"
+ui_print "RAM：$mem_info"
+ui_print "存储：$storage_info"
 }
 
 install_status() {
@@ -70,17 +92,17 @@ esac
 install_module() {
 cd ~
 case "$1" in
-    napcat)
+    napcat|1)
         curl -o napcat.sh https://nclatest.znin.net/NapNeko/NapCat-Installer/main/script/install.sh && sudo bash napcat.sh
         ;;
-    java)
+    java|2)
         install_status "$1" 2>&1 >/dev/null
         if [[ -z "$abi" ]]; then
             ui_print "不支持的系统"
             exit 127
         fi
         if [[ "$java_status" == "未安装" ]]; then
-            [[ "$2" == "git" ]] && file_link="https://github.akams.cn/" || file_link=""
+            [[ "$2" == "git" || "$2" == "1" ]] && file_link="https://github.akams.cn/" || file_link=""
             curl -L -O ${file_link}https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.8+10/OpenJDK11U-jdk_${abi}_linux_hotspot_11.0.8_10.tar.gz
             if [[ -d $JAVA_HOME ]]; then
             rm -rf $JAVA_HOME
@@ -136,8 +158,8 @@ read_or() {
 update_bot() {
 cd ~
 case "$1" in
-    bot)
-        [[ "$2" == "git" ]] && file_link="https://github.com/liyw0205/xxbot/releases/download/xxbot" || file_link="https://gitee.com/keep-an-appointment/xxbot/releases/download/bot"
+    bot|1)
+        [[ "$2" == "git" || "$2" == "1" ]] && file_link="https://github.com/liyw0205/xxbot/releases/download/xxbot" || file_link="https://gitee.com/keep-an-appointment/xxbot/releases/download/bot"
         bot_md5=$(curl -L https://gitee.com/keep-an-appointment/xxbot/releases/download/bot/md5 2>/dev/null)
         curl -L -O $file_link/bot.jar
         jar_md5=$(md5sum ~/bot.jar | awk '{print $1}')
@@ -155,7 +177,7 @@ case "$1" in
         mv pf.txt $MODDIR/pf.txt
         install_status "bot"
         ;;
-    config)
+    config|2)
         generate_config
         ;;
 esac
@@ -164,8 +186,8 @@ esac
 generate_config() {
     while true; do
         read_or qq 1 "控制小号的QQ" || continue
-        read_or groupId 1 "修炼群号" || continue
-        read_or taskId 2 "任务群号默认修炼群号" || taskId=$groupId
+        read_or groupId 1 "修炼群号（多账号不可重复）" || continue
+        read_or taskId 2 "任务群号默认修炼群号（消息转发群，可重复）" || taskId=$groupId
         read_or cultivationMode 2 "修炼模式：0什么都不干，1修炼，2普通闭关（默认），3宗门闭关" || cultivationMode=2
         read_or rewardMode 2 "悬赏令模式：
 1：手动 2：手动接取自动结算 3：全自动价值优先 4：全自动优先时间最短的
@@ -249,7 +271,7 @@ EOF
         
 cat <<EOF>> "$MODDIR/config/application-local.yml"
   - type: ws-reverse
-    url: ws://localhost:$port
+    url: ws://0.0.0.0:$port
     accessToken: 1024*1024*1024
     #    修炼群号
     groupId: $groupId
@@ -314,17 +336,18 @@ napcat_or() {
 [[ ! -z "$2" ]] && screen_qq="$2" || screen_qq="napcat"
 [[ ! -z "$2" ]] && napcat_qq="-q $2" || napcat_qq=
  case "$1" in
-    start)
+    start|1)
         xvfb-run -a qq --no-sandbox $napcat_qq
         ;;
-    screen)
+    screen|2)
         [[ ! -z "$3" ]] && screen_qq="$3" || screen_qq="napcat"
         screen -dmS $screen_qq bash -c "xvfb-run -a qq --no-sandbox $napcat_qq"
-        ;;
-    status)
         screen -r $screen_qq
         ;;
-    stop)
+    status|3)
+        screen -r $screen_qq
+        ;;
+    stop|4)
         screen -S $screen_qq -X quit
         ;;
  esac
@@ -339,19 +362,21 @@ if [[ -z "$(which cron)" ]]; then
 fi
 temp_cron=$MODDIR/temp_cron
 crontab -l > $temp_cron || touch $temp_cron
-[[ "$1" = stop ]] && {
+[[ "$1" = "stop" || "$1" == "1" ]] && {
+    cron_status="取消"
     [[ ! -z "$(cat $temp_cron | grep '#xxbot cron')" ]] && {
         sed -e '/^#xxbot cron/d' -e '/@reboot xxbot restart/d' -e '/35 23 \* \* \* xxbot restart/d' $temp_cron > $temp_cron.tmp
         mv $temp_cron.tmp $temp_cron
         }
     } || {
+    cron_status="设置"
     [[ -z "$(cat $temp_cron | grep '#xxbot cron')" ]] && {
         echo "#xxbot cron" >> $temp_cron
         echo "@reboot xxbot restart" >> $temp_cron
         echo "35 23 * * * xxbot restart" >> $temp_cron
         }
     }
-crontab $temp_cron && ui_print "定时任务设置成功" || ui_print "定时任务设置失败"
+crontab $temp_cron && ui_print "$cron_status定时任务成功" || ui_print "$cron_status定时任务失败"
 rm $temp_cron
 }
 
@@ -385,7 +410,7 @@ if ps -ef | grep "$MODDIR/bot.jar" | grep -v grep >/dev/null; then
 xxbot_pid=$(ps -ef | grep "$MODDIR/bot.jar" | grep -v grep | awk '{print $2}')
 fi
 case "$1" in
-    start)
+    start|1)
         install_status "java" 2>&1 >/dev/null
         if [[ "$java_status" == "未安装" ]]; then
             ui_print "请先安装java"
@@ -395,30 +420,31 @@ case "$1" in
             java -Dfile.encoding=UTF-8 -jar $MODDIR/bot.jar --spring.config.location=file:$MODDIR/config/
         fi
         ;;
-    bstart)
-        nohup xxbot start > $MODDIR/xxbot.log 2>&1 &
+    bstart|2)
+        [[ ! -z "$xxbot_pid" ]] || nohup xxbot start > $MODDIR/xxbot.log 2>&1 &
         tail -f $MODDIR/xxbot.log
         ;;
-    restart)
+    restart|3)
         [[ ! -z "$xxbot_pid" ]] && kill -9 $xxbot_pid
         xxbot bstart
         ;;
-    status)
+    status|4)
         [[ ! -z "$xxbot_pid" ]] && tail -f $MODDIR/xxbot.log || ui_print "xxbot未启动"
         ;;
-    stop)
+    stop|5)
         [[ ! -z "$xxbot_pid" ]] && kill -9 $xxbot_pid
+        ui_print "已停止xxbot"
         ;;
-    cron)
+    cron|6)
         cron_or "$2"
         ;;
-    napcat)
+    napcat|7)
         napcat_or "$2" "$3" "$4"
         ;;
-    update)
+    update|8)
         update_bot "$2"
         ;;
-    install)
+    install|9)
         install_module "$2"
         ;;
     *)

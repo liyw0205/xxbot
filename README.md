@@ -21,35 +21,37 @@ curl -L -o xxbot.sh https://raw.githubusercontent.com/liyw0205/xxbot/refs/heads/
  </details>
  
 # 💡 使用
+> 全部功能
+
 ```
 xxbot options
 
-    start             [启动xxbot]
-    bstart            [后台启动xxbot]
-    restart           [重启xxbot]
-    status            [查看xxbot后台状态]
-    stop              [停止xxbot后台]
-    cron              [定时重启xxbot]
-    cron stop         [删除定时任务]
-    napcat start      [启动napcat]
-    napcat screen     [后台启动napcat]
-    napcat status     [查看napcat后台状态]
-    napcat stop       [停止napcat后台]
-    update bot        [下载/更新bot]
-    update bot git    [github镜像]
-    update config     [重置配置]
-    install napcat    [安装napcat]
-    install java      [安装java]
-    install java git  [github加速]
+1. start             [启动xxbot]
+2. bstart            [后台启动xxbot]
+3. restart           [重启xxbot]
+4. status            [查看xxbot后台状态]
+5. stop              [停止xxbot后台]
+6. cron              [定时重启xxbot]
+6. cron stop         [删除定时任务]
+7. napcat start      [启动napcat]
+7. napcat screen     [后台启动napcat]
+7. napcat status     [查看napcat后台状态]
+7. napcat stop       [停止napcat后台]
+8. update bot        [下载/更新bot]
+8. update bot git    [github镜像]
+8. update config     [重置配置]
+9. install napcat    [安装napcat]
+9. install java      [安装java]
+9. install java git  [github加速]
 ```
-> 全部功能
+
+> 启动例子
 
 ```
 xxbot start
 
 xxbot napcat start
 ```
-> 使用例子
 
 - napcat screen 默认会话名napcat
 - screen -ls 查看全部会话
@@ -61,3 +63,12 @@ xxbot napcat start
 - napcat screen 1112223334 qq2
 - 查看/停止napcat后台可以加会话名
 - napcat status qq2
+
+> 快捷命令帮助，数字按命令顺序类推
+
+- start可以代表1 bstart可以代表2
+- xxbot 1等于xxbot start
+- xxbot 2等于xxbot bstart
+- xxbot 8 1等于xxbot update bot
+- xxbot 8 1 1等于xxbot update bot git
+- xxbot 8 2等于xxbot update config
