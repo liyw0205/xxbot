@@ -201,6 +201,8 @@ generate_config() {
         read_or qq 1 "控制小号的QQ" || continue
         read_or groupId 1 "修炼群号（多账号不可重复）" || continue
         read_or taskId 2 "任务群号默认修炼群号（消息转发群，可重复）" || taskId=$groupId
+        read_or xxyzGroupId 2 "验证码转发群号默认修炼群号" || xxyzGroupId=$groupId
+        read_or xxport 2 "反向ws端口（默认8082）" || xxport=8082
         read_or cultivationMode 2 "修炼模式：0什么都不干，1修炼，2普通闭关（默认），3宗门闭关" || cultivationMode=2
         read_or rewardMode 2 "悬赏令模式：
 1：手动 2：手动接取自动结算 3：全自动价值优先 4：全自动优先时间最短的
@@ -274,13 +276,16 @@ danfang:
 xingping:
   local-path: "/root/xxbot/xp.txt"
 
+#验证码转发群
+xxyzGroupId: $xxyzGroupId
+
 bot:
 
 EOF
 
+    port=$xxport
     i=1
     while [ $i -le $copy_config ]; do
-        port=$((8081 + i))
         
 cat <<EOF>> "$MODDIR/config/application-local.yml"
   - type: ws-reverse
@@ -333,6 +338,7 @@ cat <<EOF>> "$MODDIR/config/application-local.yml"
 
 EOF
 
+        port=$((port + 1))
         i=$((i + 1))
     done
 
@@ -354,11 +360,11 @@ napcat_or() {
         ;;
     screen|2)
         [[ ! -z "$3" ]] && screen_qq="$3" || screen_qq="napcat"
-        screen -dmS $screen_qq bash -c "xvfb-run -a qq --no-sandbox $napcat_qq"
-        screen -r $screen_qq
+        [[ ! -z $(screen -list | grep "$screen_qq") ]] && ui_print "会话 $screen_qq 已经占用" || screen -dmS $screen_qq bash -c "xvfb-run -a qq --no-sandbox $napcat_qq"
+        ui_print "查看日志：xxbot napcat status $screen_qq"
         ;;
     status|3)
-        screen -r $screen_qq
+        screen -r $screen_qq || ui_print "查看失败"
         ;;
     stop|4)
         screen -S $screen_qq -X quit
